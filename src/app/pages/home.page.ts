@@ -1,0 +1,178 @@
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+
+@Component({
+  selector: 'app-home-page',
+  standalone: true,
+  imports: [RouterLink, MatButtonModule, MatCardModule],
+  template: `
+    <section class="hero shell">
+      <div class="hero-copy">
+<h1>Track expiring pantry items in one place.</h1>
+        <p class="lede">
+          This minimal working version focuses on the base workflow: add pantry items,
+          store them locally, and keep the most urgent ingredients visible.
+        </p>
+        <div class="cta-row">
+          <a mat-flat-button color="primary" routerLink="/pantry">Add Pantry Items</a>
+        </div>
+        <div class="hero-stats" aria-label="Study features">
+          <div>
+            <strong>CRUD</strong>
+            <span>pantry management</span>
+          </div>
+          <div>
+            <strong>Freshness</strong>
+            <span>expiry badges</span>
+          </div>
+          <div>
+            <strong>Local</strong>
+            <span>device-only storage</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell highlights">
+      <mat-card>
+        <h3>My Pantry</h3>
+        <p>Manually add ingredients, quantities, and expiration dates with quick date shortcuts.</p>
+      </mat-card>
+      <mat-card>
+        <h3>Visibility</h3>
+        <p>Pantry items are sorted by soonest expiration and labeled by urgency.</p>
+      </mat-card>
+    </section>
+  `,
+  styles: [`
+    .hero {
+      display: grid;
+      gap: 1rem;
+      padding-top: 1.5rem;
+    }
+
+    .hero-copy {
+      position: relative;
+      overflow: hidden;
+      padding: 1.5rem;
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at top right, rgba(217, 152, 45, 0.16), transparent 24%),
+        linear-gradient(180deg, rgba(252, 249, 242, 0.96), rgba(252, 249, 242, 0.88));
+      box-shadow: 0 24px 60px rgba(17, 38, 53, 0.1);
+    }
+
+    .hero-copy::after {
+      content: '';
+      position: absolute;
+      right: -36px;
+      bottom: -36px;
+      width: 170px;
+      height: 170px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(47, 111, 83, 0.16), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.5rem;
+      color: var(--app-accent);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.25rem, 7vw, 4.75rem);
+      line-height: 0.97;
+    }
+
+    .lede {
+      max-width: 55ch;
+      color: var(--app-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .hero-stats div {
+      display: grid;
+      gap: 0.2rem;
+      padding: 0.85rem 0.9rem;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(17, 38, 53, 0.06);
+    }
+
+    .hero-stats strong {
+      font-family: var(--display-font);
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .hero-stats span {
+      color: var(--app-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .highlights {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      padding-bottom: 1rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .highlights mat-card {
+      position: relative;
+      overflow: hidden;
+      padding: 1.35rem;
+      border-radius: 26px;
+      background: rgba(252, 249, 242, 0.88);
+    }
+
+    .highlights mat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: linear-gradient(180deg, var(--app-green), var(--app-accent));
+    }
+
+    h2,
+    h3 {
+      margin-top: 0;
+    }
+
+    h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    @media (min-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+    }
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+export class HomePageComponent {}

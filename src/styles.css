@@ -1,0 +1,129 @@
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+:root {
+  --display-font: 'Fraunces', Georgia, serif;
+  --body-font: 'Inter', system-ui, sans-serif;
+  --app-bg: #f7f1e7;
+  --app-surface: #fcf9f2;
+  --app-surface-strong: rgba(252, 249, 242, 0.94);
+  --app-ink: #112635;
+  --app-muted: #5f6c76;
+  --app-accent: #c0512d;
+  --app-green: #2f6f53;
+  --app-gold: #d9982d;
+  --app-border: rgba(17, 38, 53, 0.08);
+  --app-shadow-soft: 0 16px 40px rgba(17, 38, 53, 0.07);
+  --app-shadow-strong: 0 24px 70px rgba(17, 38, 53, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--body-font);
+  color: var(--app-ink);
+  background:
+    radial-gradient(circle at top left, rgba(217, 152, 45, 0.2), transparent 28%),
+    radial-gradient(circle at 90% 12%, rgba(47, 111, 83, 0.16), transparent 24%),
+    radial-gradient(circle at 50% 100%, rgba(192, 81, 45, 0.08), transparent 24%),
+    linear-gradient(180deg, #f8f3ea 0%, #f5efe5 48%, #fbf9f4 100%);
+  background-attachment: fixed;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  position: relative;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--display-font);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p,
+li {
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+a {
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+button {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+button:hover,
+a:hover {
+  transform: translateY(-1px);
+}
+
+.shell {
+  width: min(1180px, calc(100% - 1.25rem));
+  margin: 0 auto;
+}
+
+.mat-mdc-card,
+.mat-mdc-dialog-surface {
+  --mdc-elevated-card-container-shape: 24px;
+}
+
+.mat-mdc-card {
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-soft);
+}
+
+.mat-mdc-button-base {
+  min-height: 44px;
+}
+
+.mat-mdc-unelevated-button:not(:disabled),
+.mat-mdc-outlined-button:not(:disabled),
+.mat-mdc-button:not(:disabled) {
+  border-radius: 14px;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-chip {
+  font-weight: 700;
+}
+
+.page-shell {
+  animation: page-enter 340ms ease-out;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 720px) {
+  .shell {
+    width: min(1180px, calc(100% - 2rem));
+  }
+}
