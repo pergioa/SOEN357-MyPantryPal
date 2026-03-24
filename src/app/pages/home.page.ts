@@ -10,22 +10,24 @@ import { MatCardModule } from '@angular/material/card';
   template: `
     <section class="hero shell">
       <div class="hero-copy">
-<h1>Track expiring pantry items in one place.</h1>
+        <p class="eyebrow">Pantry and recipes</p>
+        <h1>Match your pantry to simple recipe ideas.</h1>
         <p class="lede">
-          This minimal working version focuses on the base workflow: add pantry items,
-          store them locally, and keep the most urgent ingredients visible.
+          This stage adds recipe browsing and pantry-based ranking so users can move from
+          tracking ingredients to choosing a realistic meal.
         </p>
         <div class="cta-row">
           <a mat-flat-button color="primary" routerLink="/pantry">Add Pantry Items</a>
+          <a mat-stroked-button routerLink="/recipes">Find Recipes</a>
         </div>
         <div class="hero-stats" aria-label="Study features">
           <div>
-            <strong>CRUD</strong>
-            <span>pantry management</span>
+            <strong>12</strong>
+            <span>hardcoded recipes</span>
           </div>
           <div>
-            <strong>Freshness</strong>
-            <span>expiry badges</span>
+            <strong>Match</strong>
+            <span>ingredient ranking</span>
           </div>
           <div>
             <strong>Local</strong>
@@ -41,8 +43,8 @@ import { MatCardModule } from '@angular/material/card';
         <p>Manually add ingredients, quantities, and expiration dates with quick date shortcuts.</p>
       </mat-card>
       <mat-card>
-        <h3>Visibility</h3>
-        <p>Pantry items are sorted by soonest expiration and labeled by urgency.</p>
+        <h3>Recipes</h3>
+        <p>Compare recipes by pantry match, missing ingredients, time, and difficulty.</p>
       </mat-card>
     </section>
   `,
@@ -138,7 +140,6 @@ import { MatCardModule } from '@angular/material/card';
       gap: 1rem;
       margin-top: 1.25rem;
       padding-bottom: 1rem;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .highlights mat-card {
@@ -170,6 +171,10 @@ import { MatCardModule } from '@angular/material/card';
       .hero {
         grid-template-columns: 1fr;
         align-items: stretch;
+      }
+
+      .highlights {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
   `],

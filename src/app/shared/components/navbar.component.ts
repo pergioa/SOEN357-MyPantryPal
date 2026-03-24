@@ -26,6 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
       <nav class="desktop-nav" aria-label="Primary">
         <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
         <a mat-button routerLink="/pantry" routerLinkActive="active-link">My Pantry</a>
+        <a mat-button routerLink="/recipes" routerLinkActive="active-link">Recipes</a>
       </nav>
     </mat-toolbar>
 
@@ -37,6 +38,10 @@ import { MatIconModule } from '@angular/material/icon';
       <a routerLink="/pantry" routerLinkActive="active-tab">
         <mat-icon>kitchen</mat-icon>
         <span>Pantry</span>
+      </a>
+      <a routerLink="/recipes" routerLinkActive="active-tab">
+        <mat-icon>restaurant_menu</mat-icon>
+        <span>Recipes</span>
       </a>
     </nav>
   `,
@@ -99,7 +104,7 @@ import { MatIconModule } from '@angular/material/icon';
       bottom: 0.75rem;
       z-index: 30;
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 0.25rem;
       padding: 0.5rem;
       background: rgba(252, 249, 242, 0.88);
