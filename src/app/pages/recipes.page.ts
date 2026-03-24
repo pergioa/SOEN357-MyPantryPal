@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { PantryService } from '../core/services/pantry.service';
 import { RecipesService } from '../core/services/recipes.service';
+import { StudyModeService } from '../core/services/study-mode.service';
 import { scoreRecipes } from '../core/utils/scoring-utils';
 import { RecipeCardComponent } from '../shared/components/recipe-card.component';
 
@@ -18,12 +19,13 @@ import { RecipeCardComponent } from '../shared/components/recipe-card.component'
           <p class="eyebrow">Recipes</p>
           <h1>Task: Choose a recipe you would cook today.</h1>
           <p class="subtle">
-            Recommendations update automatically from your pantry contents.
+            Recommendations update automatically from your pantry and current study mode.
           </p>
         </div>
         <mat-card class="task-banner">
-          <strong>Sorted by pantry match</strong>
-          <span>Ties are broken by the fastest recipe.</span>
+          <strong>Mode {{ mode() }}</strong>
+          <span *ngIf="mode() === 'A'">Sorted by pantry match, then time.</span>
+          <span *ngIf="mode() === 'B'">Soon-to-expire ingredients receive a recommendation boost.</span>
         </mat-card>
       </div>
 
@@ -35,6 +37,7 @@ import { RecipeCardComponent } from '../shared/components/recipe-card.component'
         <app-recipe-card
           *ngFor="let scored of scoredRecipes()"
           [scored]="scored"
+          [mode]="mode()"
           (viewDetails)="router.navigate(['/recipes', $event])"
         ></app-recipe-card>
       </div>
@@ -118,7 +121,11 @@ export class RecipesPageComponent {
   readonly router = inject(Router);
   private readonly pantryService = inject(PantryService);
   private readonly recipesService = inject(RecipesService);
+  private readonly studyMode = inject(StudyModeService);
 
   readonly pantryItems = this.pantryService.pantry;
-  readonly scoredRecipes = computed(() => scoreRecipes(this.recipesService.getRecipes(), this.pantryService.pantry()));
+  readonly mode = computed(() => this.studyMode.mode());
+  readonly scoredRecipes = computed(() =>
+    scoreRecipes(this.recipesService.getRecipes(), this.pantryService.pantry(), this.mode())
+  );
 }

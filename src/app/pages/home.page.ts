@@ -1,20 +1,23 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { ModeToggleComponent } from '../shared/components/mode-toggle.component';
+import { StudyModeService } from '../core/services/study-mode.service';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatCardModule],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatCardModule, ModeToggleComponent],
   template: `
     <section class="hero shell">
       <div class="hero-copy">
-        <p class="eyebrow">Pantry and recipes</p>
-        <h1>Match your pantry to simple recipe ideas.</h1>
+        <p class="eyebrow">Food waste reduction study</p>
+        <h1>Cook what you already have before it expires.</h1>
         <p class="lede">
-          This stage adds recipe browsing and pantry-based ranking so users can move from
-          tracking ingredients to choosing a realistic meal.
+          MyPantryPal helps participants log pantry items, compare recipes, and test whether
+          expiration-aware recommendations shift recipe choice.
         </p>
         <div class="cta-row">
           <a mat-flat-button color="primary" routerLink="/pantry">Add Pantry Items</a>
@@ -26,8 +29,8 @@ import { MatCardModule } from '@angular/material/card';
             <span>hardcoded recipes</span>
           </div>
           <div>
-            <strong>Match</strong>
-            <span>ingredient ranking</span>
+            <strong>A/B</strong>
+            <span>study conditions</span>
           </div>
           <div>
             <strong>Local</strong>
@@ -35,6 +38,17 @@ import { MatCardModule } from '@angular/material/card';
           </div>
         </div>
       </div>
+
+      <mat-card class="mode-card">
+        <p class="mode-title">Current Study Mode</p>
+        <h2>{{ modeName() }}</h2>
+        <p>
+          Mode {{ mode() }} is currently active.
+          <span *ngIf="mode() === 'A'">Recipes are sorted by ingredient match only.</span>
+          <span *ngIf="mode() === 'B'">Recipes that use soon-to-expire items get a priority boost.</span>
+        </p>
+        <app-mode-toggle></app-mode-toggle>
+      </mat-card>
     </section>
 
     <section class="shell highlights">
@@ -44,7 +58,11 @@ import { MatCardModule } from '@angular/material/card';
       </mat-card>
       <mat-card>
         <h3>Recipes</h3>
-        <p>Compare recipes by pantry match, missing ingredients, time, and difficulty.</p>
+        <p>Compare recipes by pantry match, missing ingredients, time, and expiration relevance.</p>
+      </mat-card>
+      <mat-card>
+        <h3>Study Modes</h3>
+        <p>Switch between standard ranking and expiration-aware ranking to compare recommendation behavior.</p>
       </mat-card>
     </section>
   `,
@@ -76,6 +94,14 @@ import { MatCardModule } from '@angular/material/card';
       border-radius: 999px;
       background: radial-gradient(circle, rgba(47, 111, 83, 0.16), transparent 70%);
       pointer-events: none;
+    }
+
+    .mode-card {
+      padding: 1.5rem;
+      border-radius: 30px;
+      background:
+        linear-gradient(180deg, rgba(255, 249, 241, 0.95), rgba(252, 249, 242, 0.9));
+      box-shadow: 0 24px 60px rgba(17, 38, 53, 0.08);
     }
 
     .eyebrow {
@@ -158,6 +184,15 @@ import { MatCardModule } from '@angular/material/card';
       background: linear-gradient(180deg, var(--app-green), var(--app-accent));
     }
 
+    .mode-title {
+      margin-bottom: 0.35rem;
+      color: var(--app-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+    }
+
     h2,
     h3 {
       margin-top: 0;
@@ -169,15 +204,20 @@ import { MatCardModule } from '@angular/material/card';
 
     @media (min-width: 900px) {
       .hero {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1.4fr 1fr;
         align-items: stretch;
       }
 
       .highlights {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HomePageComponent {}
+export class HomePageComponent {
+  private readonly studyMode = inject(StudyModeService);
+
+  readonly mode = computed(() => this.studyMode.mode());
+  readonly modeName = computed(() => this.mode() === 'A' ? 'Standard' : 'Expiration-aware');
+}

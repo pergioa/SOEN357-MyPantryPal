@@ -1,3 +1,5 @@
+export type StudyMode = 'A' | 'B';
+
 export interface IngredientItem {
   id: string;
   name: string;
@@ -15,9 +17,19 @@ export interface Recipe {
   steps: string[];
 }
 
+export interface StudyLogEntry {
+  chosenRecipeId: string;
+  mode: StudyMode;
+  timestamp: string;
+  pantrySnapshot: IngredientItem[];
+}
+
 export interface ScoredRecipe {
   recipe: Recipe;
   matchScore: number;
+  boostScore: number;
+  totalScore: number;
   presentIngredients: string[];
   missingIngredients: string[];
+  soonIngredients: string[];
 }

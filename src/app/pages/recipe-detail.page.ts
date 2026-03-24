@@ -6,8 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 import { PantryService } from '../core/services/pantry.service';
 import { RecipesService } from '../core/services/recipes.service';
+import { StudyModeService } from '../core/services/study-mode.service';
 import { scoreRecipes } from '../core/utils/scoring-utils';
 
 @Component({
@@ -20,7 +22,8 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,
-    MatChipsModule
+    MatChipsModule,
+    MatIconModule
   ],
   template: `
     <section class="shell detail-shell" *ngIf="scoredRecipe(); else missingRecipe">
@@ -35,6 +38,10 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
           </p>
           <mat-chip-set>
             <mat-chip *ngFor="let tag of scoredRecipe()!.recipe.tags">{{ tag }}</mat-chip>
+            <mat-chip *ngIf="mode() === 'B' && scoredRecipe()!.soonIngredients.length" class="use-soon-chip">
+              <mat-icon>warning</mat-icon>
+              Use Soon
+            </mat-chip>
           </mat-chip-set>
         </div>
       </mat-card>
@@ -45,7 +52,12 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
           <div class="ingredient-list">
             <label class="ingredient-row" *ngFor="let ingredient of scoredRecipe()!.recipe.ingredients">
               <mat-checkbox [checked]="scoredRecipe()!.presentIngredients.includes(ingredient)">
-                <span>{{ ingredient | titlecase }}</span>
+                <span [class.soon-ingredient]="mode() === 'B' && scoredRecipe()!.soonIngredients.includes(ingredient)">
+                  {{ ingredient | titlecase }}
+                  <span *ngIf="mode() === 'B' && scoredRecipe()!.soonIngredients.includes(ingredient)">
+                    · Use soon
+                  </span>
+                </span>
               </mat-checkbox>
             </label>
           </div>
@@ -135,6 +147,13 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
     .ingredient-row:last-child {
       border-bottom: 0;
     }
+
+    .use-soon-chip,
+    .soon-ingredient {
+      color: #9a3412;
+      font-weight: 700;
+    }
+
     ol {
       margin: 0;
       padding-left: 1.2rem;
@@ -153,12 +172,14 @@ export class RecipeDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly pantryService = inject(PantryService);
   private readonly recipesService = inject(RecipesService);
+  private readonly studyMode = inject(StudyModeService);
 
   private readonly routeParams = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
 
   readonly recipeId = computed(() => this.routeParams()?.get('id') ?? '');
+  readonly mode = computed(() => this.studyMode.mode());
   readonly scoredRecipe = computed(() =>
-    scoreRecipes(this.recipesService.getRecipes(), this.pantryService.pantry())
+    scoreRecipes(this.recipesService.getRecipes(), this.pantryService.pantry(), this.mode())
       .find((entry) => entry.recipe.id === this.recipeId())
   );
 }
