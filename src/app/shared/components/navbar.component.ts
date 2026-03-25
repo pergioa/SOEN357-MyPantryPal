@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { ModeToggleComponent } from './mode-toggle.component';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
     RouterLinkActive,
     MatToolbarModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatBottomSheetModule,
+    ModeToggleComponent
   ],
   template: `
     <mat-toolbar class="app-toolbar">
@@ -28,6 +32,11 @@ import { MatIconModule } from '@angular/material/icon';
         <a mat-button routerLink="/pantry" routerLinkActive="active-link">My Pantry</a>
         <a mat-button routerLink="/recipes" routerLinkActive="active-link">Recipes</a>
       </nav>
+
+      <div class="toolbar-spacer"></div>
+      <div class="desktop-mode">
+        <app-mode-toggle></app-mode-toggle>
+      </div>
     </mat-toolbar>
 
     <nav class="mobile-nav" aria-label="Mobile">
@@ -92,6 +101,14 @@ import { MatIconModule } from '@angular/material/icon';
       font-weight: 700;
     }
 
+    .toolbar-spacer {
+      flex: 1;
+    }
+
+    .desktop-mode {
+      display: none;
+    }
+
     .active-link {
       font-weight: 700;
       background: rgba(47, 111, 83, 0.11);
@@ -136,7 +153,8 @@ import { MatIconModule } from '@angular/material/icon';
     }
 
     @media (min-width: 900px) {
-      .desktop-nav {
+      .desktop-nav,
+      .desktop-mode {
         display: flex;
       }
 

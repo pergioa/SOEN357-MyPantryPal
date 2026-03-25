@@ -4,7 +4,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { ScoredRecipe } from '../../core/models';
+import { MatIconModule } from '@angular/material/icon';
+import { ScoredRecipe, StudyMode } from '../../core/models';
 
 @Component({
   selector: 'app-recipe-card',
@@ -15,7 +16,8 @@ import { ScoredRecipe } from '../../core/models';
     MatCardModule,
     MatButtonModule,
     MatChipsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatIconModule
   ],
   template: `
     <mat-card class="recipe-card">
@@ -33,13 +35,20 @@ import { ScoredRecipe } from '../../core/models';
           <mat-chip-set>
             <mat-chip>{{ scored.presentIngredients.length }} / {{ scored.recipe.ingredients.length }} ingredients</mat-chip>
             <mat-chip *ngFor="let tag of scored.recipe.tags">{{ tag }}</mat-chip>
+            <mat-chip *ngIf="mode === 'B' && scored.soonIngredients.length" class="use-soon-chip">
+              <mat-icon>warning</mat-icon>
+              Use Soon
+            </mat-chip>
           </mat-chip-set>
         </div>
 
         <p class="summary" *ngIf="scored.presentIngredients.length; else noMatches">
           Uses:
           <span *ngFor="let ingredient of scored.presentIngredients; let last = last">
-            <span>{{ ingredient | titlecase }}</span><span *ngIf="!last">, </span>
+            <span [class.soon-ingredient]="mode === 'B' && scored.soonIngredients.includes(ingredient)">
+              {{ ingredient | titlecase }}
+              <span *ngIf="mode === 'B' && scored.soonIngredients.includes(ingredient)"> (use soon)</span>
+            </span><span *ngIf="!last">, </span>
           </span>
         </p>
         <ng-template #noMatches>
@@ -140,6 +149,16 @@ import { ScoredRecipe } from '../../core/models';
       word-break: break-word;
     }
 
+    .use-soon-chip {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .soon-ingredient {
+      font-weight: 700;
+      color: #9a3412;
+    }
+
     mat-card-content {
       flex: 1;
     }
@@ -213,5 +232,6 @@ import { ScoredRecipe } from '../../core/models';
 })
 export class RecipeCardComponent {
   @Input({ required: true }) scored!: ScoredRecipe;
+  @Input({ required: true }) mode!: StudyMode;
   @Output() viewDetails = new EventEmitter<string>();
 }
