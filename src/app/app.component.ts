@@ -15,7 +15,7 @@ import { NavbarComponent } from './shared/components/navbar.component';
   styles: [`
     .app-main {
       min-height: calc(100vh - 72px);
-      padding-bottom: 5rem;
+      padding-bottom: 6rem;
     }
 
     @media (min-width: 900px) {
