@@ -1,5 +1,4 @@
-# Step 1
-
+## Description
 This is the minimal viable version of MyPantryPal.
 
 ## Features
