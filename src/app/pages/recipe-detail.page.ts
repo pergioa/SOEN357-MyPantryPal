@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +9,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { PantryService } from '../core/services/pantry.service';
 import { RecipesService } from '../core/services/recipes.service';
+import { StudyLogService } from '../core/services/study-log.service';
 import { StudyModeService } from '../core/services/study-mode.service';
 import { scoreRecipes } from '../core/utils/scoring-utils';
 
@@ -44,6 +45,7 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
             </mat-chip>
           </mat-chip-set>
         </div>
+        <button mat-flat-button color="primary" (click)="submitChoice()">Submit Choice</button>
       </mat-card>
 
       <div class="detail-grid">
@@ -161,6 +163,11 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
     }
 
     @media (min-width: 900px) {
+      .hero-card {
+        grid-template-columns: 1fr auto;
+        align-items: center;
+      }
+
       .detail-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -170,9 +177,11 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
 })
 export class RecipeDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly pantryService = inject(PantryService);
   private readonly recipesService = inject(RecipesService);
   private readonly studyMode = inject(StudyModeService);
+  private readonly studyLog = inject(StudyLogService);
 
   private readonly routeParams = toSignal(this.route.paramMap, { initialValue: this.route.snapshot.paramMap });
 
@@ -182,4 +191,20 @@ export class RecipeDetailPageComponent {
     scoreRecipes(this.recipesService.getRecipes(), this.pantryService.pantry(), this.mode())
       .find((entry) => entry.recipe.id === this.recipeId())
   );
+
+  submitChoice(): void {
+    const scored = this.scoredRecipe();
+    if (!scored) {
+      return;
+    }
+
+    this.studyLog.add({
+      chosenRecipeId: scored.recipe.id,
+      mode: this.mode(),
+      timestamp: new Date().toISOString(),
+      pantrySnapshot: this.pantryService.pantry()
+    });
+
+    this.router.navigate(['/study-log']);
+  }
 }
