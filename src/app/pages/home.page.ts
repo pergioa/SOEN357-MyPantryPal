@@ -84,18 +84,6 @@ import { StudyModeService } from '../core/services/study-mode.service';
       box-shadow: 0 24px 60px rgba(17, 38, 53, 0.1);
     }
 
-    .hero-copy::after {
-      content: '';
-      position: absolute;
-      right: -36px;
-      bottom: -36px;
-      width: 170px;
-      height: 170px;
-      border-radius: 999px;
-      background: radial-gradient(circle, rgba(47, 111, 83, 0.16), transparent 70%);
-      pointer-events: none;
-    }
-
     .mode-card {
       padding: 1.5rem;
       border-radius: 30px;
@@ -174,14 +162,6 @@ import { StudyModeService } from '../core/services/study-mode.service';
       padding: 1.35rem;
       border-radius: 26px;
       background: rgba(252, 249, 242, 0.88);
-    }
-
-    .highlights mat-card::before {
-      content: '';
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 5px;
-      background: linear-gradient(180deg, var(--app-green), var(--app-accent));
     }
 
     .mode-title {
