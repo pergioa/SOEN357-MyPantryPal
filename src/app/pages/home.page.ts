@@ -61,8 +61,8 @@ import { StudyModeService } from '../core/services/study-mode.service';
         <p>Compare recipes by pantry match, missing ingredients, time, and expiration relevance.</p>
       </mat-card>
       <mat-card>
-        <h3>Study Modes</h3>
-        <p>Switch between standard ranking and expiration-aware ranking to compare recommendation behavior.</p>
+        <h3>Study Log</h3>
+        <p>Capture recipe choices with a pantry snapshot and export the session data as JSON.</p>
       </mat-card>
     </section>
   `,

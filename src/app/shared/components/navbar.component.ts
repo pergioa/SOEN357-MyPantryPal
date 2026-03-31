@@ -31,6 +31,7 @@ import { ModeToggleComponent } from './mode-toggle.component';
         <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">Home</a>
         <a mat-button routerLink="/pantry" routerLinkActive="active-link">My Pantry</a>
         <a mat-button routerLink="/recipes" routerLinkActive="active-link">Recipes</a>
+        <a mat-button routerLink="/study-log" routerLinkActive="active-link">Study Log</a>
       </nav>
 
       <div class="toolbar-spacer"></div>
@@ -51,6 +52,10 @@ import { ModeToggleComponent } from './mode-toggle.component';
       <a routerLink="/recipes" routerLinkActive="active-tab">
         <mat-icon>restaurant_menu</mat-icon>
         <span>Recipes</span>
+      </a>
+      <a routerLink="/study-log" routerLinkActive="active-tab">
+        <mat-icon>fact_check</mat-icon>
+        <span>Logs</span>
       </a>
     </nav>
   `,
@@ -121,7 +126,7 @@ import { ModeToggleComponent } from './mode-toggle.component';
       bottom: 0.75rem;
       z-index: 30;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 0.25rem;
       padding: 0.5rem;
       background: rgba(252, 249, 242, 0.88);
