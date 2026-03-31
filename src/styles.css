@@ -31,8 +31,6 @@ body {
     radial-gradient(circle at 90% 12%, rgba(47, 111, 83, 0.16), transparent 24%),
     radial-gradient(circle at 50% 100%, rgba(192, 81, 45, 0.08), transparent 24%),
     linear-gradient(180deg, #f8f3ea 0%, #f5efe5 48%, #fbf9f4 100%);
-  background-attachment: fixed;
-  scroll-behavior: smooth;
 }
 
 body {
@@ -98,12 +96,72 @@ a:hover {
   border-radius: 14px;
 }
 
+.mat-mdc-unelevated-button:not(:disabled),
+.mat-mdc-outlined-button:not(:disabled) {
+  color: #ffffff;
+  background: #1565c0;
+}
+
+.mat-mdc-outlined-button:not(:disabled) {
+  border-color: #1565c0;
+}
+
+.mat-mdc-unelevated-button:not(:disabled):hover,
+.mat-mdc-outlined-button:not(:disabled):hover {
+  background: #0f57a8;
+}
+
+.mat-mdc-unelevated-button:not(:disabled) .mdc-button__label,
+.mat-mdc-outlined-button:not(:disabled) .mdc-button__label {
+  color: #ffffff;
+}
+
+.mat-mdc-button.mat-warn:not(:disabled) {
+  color: #ffffff;
+  background: #c62828;
+}
+
+.mat-mdc-button.mat-warn:not(:disabled):hover {
+  background: #b71c1c;
+}
+
+.mat-mdc-button.mat-warn:not(:disabled) .mdc-button__label {
+  color: #ffffff;
+}
+
 .mat-mdc-form-field {
   width: 100%;
 }
 
 .mat-mdc-chip {
   font-weight: 700;
+}
+
+.mat-mdc-chip.use-soon-chip,
+.mat-mdc-chip.use-soon-chip.mdc-evolution-chip {
+  background: #fee2e2;
+}
+
+.mat-mdc-chip.use-soon-chip,
+.mat-mdc-chip.use-soon-chip .mat-icon,
+.mat-mdc-chip.use-soon-chip .mdc-evolution-chip__text-label {
+  color: #7f1d1d;
+}
+
+.mat-mdc-chip.use-soon-chip .mat-icon {
+  margin-right: 0.3rem;
+  font-size: 1.05rem;
+  width: 1.05rem;
+  height: 1.05rem;
+  line-height: 1.05rem;
+  vertical-align: middle;
+}
+
+.mat-mdc-chip.use-soon-chip .mdc-evolution-chip__cell,
+.mat-mdc-chip.use-soon-chip .mdc-evolution-chip__action,
+.mat-mdc-chip.use-soon-chip .mdc-evolution-chip__text-label {
+  display: inline-flex;
+  align-items: center;
 }
 
 .page-shell {

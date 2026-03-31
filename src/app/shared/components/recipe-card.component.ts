@@ -21,57 +21,63 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
   ],
   template: `
     <mat-card class="recipe-card">
-      <div class="recipe-accent"></div>
-      <mat-card-header>
-        <div mat-card-avatar class="card-avatar">{{ scored.recipe.title.charAt(0) }}</div>
-        <mat-card-title>{{ scored.recipe.title }}</mat-card-title>
-        <mat-card-subtitle>
-          {{ scored.recipe.minutes }} min · {{ scored.recipe.difficulty }}
-        </mat-card-subtitle>
-      </mat-card-header>
+      <section class="card-section card-section-header">
+        <mat-card-header>
+          <mat-card-title>{{ scored.recipe.title }}</mat-card-title>
+          <mat-card-subtitle>
+            {{ scored.recipe.minutes }} min · {{ scored.recipe.difficulty }}
+          </mat-card-subtitle>
+        </mat-card-header>
+      </section>
 
       <mat-card-content>
-        <div class="chip-row">
-          <mat-chip-set>
-            <mat-chip>{{ scored.presentIngredients.length }} / {{ scored.recipe.ingredients.length }} ingredients</mat-chip>
-            <mat-chip *ngFor="let tag of scored.recipe.tags">{{ tag }}</mat-chip>
-            <mat-chip *ngIf="mode === 'B' && scored.soonIngredients.length" class="use-soon-chip">
-              <mat-icon>warning</mat-icon>
-              Use Soon
-            </mat-chip>
-          </mat-chip-set>
-        </div>
+        <section class="card-section card-section-meta">
+          <div class="chip-row">
+            <mat-chip-set>
+              <mat-chip>{{ scored.presentIngredients.length }} / {{ scored.recipe.ingredients.length }} ingredients</mat-chip>
+              <mat-chip *ngFor="let tag of scored.recipe.tags">{{ tag }}</mat-chip>
+              <mat-chip *ngIf="mode === 'B' && scored.soonIngredients.length" class="use-soon-chip">
+                <mat-icon>warning</mat-icon>
+                Use Soon
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </section>
 
-        <p class="summary" *ngIf="scored.presentIngredients.length; else noMatches">
-          Uses:
-          <span *ngFor="let ingredient of scored.presentIngredients; let last = last">
-            <span [class.soon-ingredient]="mode === 'B' && scored.soonIngredients.includes(ingredient)">
-              {{ ingredient | titlecase }}
-              <span *ngIf="mode === 'B' && scored.soonIngredients.includes(ingredient)"> (use soon)</span>
-            </span><span *ngIf="!last">, </span>
-          </span>
-        </p>
-        <ng-template #noMatches>
-          <p class="summary">No pantry matches yet. Add ingredients or load sample items to improve recommendations.</p>
-        </ng-template>
-
-        <mat-expansion-panel [disabled]="!scored.missingIngredients.length">
-          <mat-expansion-panel-header>
-            <mat-panel-title>Missing ingredients</mat-panel-title>
-            <mat-panel-description>
-              {{ scored.missingIngredients.length ? scored.missingIngredients.length + ' needed' : 'Complete match' }}
-            </mat-panel-description>
-          </mat-expansion-panel-header>
-          <p *ngIf="scored.missingIngredients.length; else noMissing">
-            {{ scored.missingIngredients.join(', ') | titlecase }}
+        <section class="card-section card-section-summary">
+          <p class="section-label">Pantry match</p>
+          <p class="summary" *ngIf="scored.presentIngredients.length; else noMatches">
+            Uses:
+            <span *ngFor="let ingredient of scored.presentIngredients; let last = last">
+              <span [class.soon-ingredient]="mode === 'B' && scored.soonIngredients.includes(ingredient)">
+                {{ ingredient | titlecase }}
+              </span><span *ngIf="!last">, </span>
+            </span>
           </p>
-          <ng-template #noMissing>
-            <p>You already have everything for this recipe.</p>
+          <ng-template #noMatches>
+            <p class="summary">No pantry matches yet. Add ingredients or load sample items to improve recommendations.</p>
           </ng-template>
-        </mat-expansion-panel>
+        </section>
+
+        <section class="card-section card-section-missing">
+          <mat-expansion-panel [disabled]="!scored.missingIngredients.length">
+            <mat-expansion-panel-header>
+              <mat-panel-title>Missing ingredients</mat-panel-title>
+              <mat-panel-description>
+                {{ scored.missingIngredients.length ? scored.missingIngredients.length + ' needed' : 'N/A' }}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <p *ngIf="scored.missingIngredients.length; else noMissing">
+              {{ scored.missingIngredients.join(', ') | titlecase }}
+            </p>
+            <ng-template #noMissing>
+              <p>You already have everything for this recipe.</p>
+            </ng-template>
+          </mat-expansion-panel>
+        </section>
       </mat-card-content>
 
-      <mat-card-actions>
+      <mat-card-actions class="card-section card-section-actions">
         <button mat-stroked-button (click)="viewDetails.emit(scored.recipe.id)">View details</button>
       </mat-card-actions>
     </mat-card>
@@ -81,8 +87,8 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
       position: relative;
       overflow: hidden;
       height: 100%;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
       border-radius: 26px;
       background:
         linear-gradient(180deg, rgba(252, 249, 242, 0.98), rgba(255, 250, 244, 0.94)),
@@ -96,26 +102,27 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
       box-shadow: 0 26px 54px rgba(17, 38, 53, 0.12);
     }
 
-    .recipe-accent {
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 6px;
-      background: linear-gradient(90deg, #2f6f53, #d9982d, #c0512d);
+    .card-section {
+      position: relative;
+      padding: 0 16px;
     }
 
-    .card-avatar {
-      display: grid;
-      place-items: center;
-      width: 44px;
-      height: 44px;
-      font-weight: 700;
-      color: white;
-      background: linear-gradient(135deg, #2f6f53, #c0512d);
+    .card-section + .card-section::before {
+      content: '';
+      position: absolute;
+      inset: 0 16px auto;
+      border-top: 1px solid rgba(17, 38, 53, 0.08);
+    }
+
+    .card-section-header {
+      padding-top: 16px;
+      padding-bottom: 10px;
     }
 
     mat-card-header {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0;
       align-items: start;
+      min-height: 76px;
     }
 
     mat-card-title {
@@ -128,8 +135,24 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
       white-space: normal;
     }
 
+    mat-card-content {
+      display: grid;
+      grid-template-rows: auto minmax(132px, 1fr) auto;
+      align-content: start;
+      padding: 0;
+    }
+
+    .card-section-meta {
+      padding-top: 12px;
+      padding-bottom: 14px;
+      min-height: 124px;
+    }
+
     .chip-row {
-      margin-bottom: 0.75rem;
+      margin: 0;
+      min-height: 100%;
+      display: flex;
+      align-items: start;
     }
 
     .chip-row mat-chip-set {
@@ -142,16 +165,29 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
       max-width: 100%;
     }
 
+    .card-section-summary {
+      padding-top: 14px;
+      padding-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      min-height: 0;
+    }
+
+    .section-label {
+      margin: 0 0 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--app-muted);
+    }
+
     .summary {
-      margin: 0 0 1rem;
+      margin: 0;
       color: var(--app-muted);
       line-height: 1.55;
       word-break: break-word;
-    }
-
-    .use-soon-chip {
-      background: #fee2e2;
-      color: #7f1d1d;
     }
 
     .soon-ingredient {
@@ -159,8 +195,9 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
       color: #9a3412;
     }
 
-    mat-card-content {
-      flex: 1;
+    .card-section-missing {
+      padding-top: 14px;
+      padding-bottom: 8px;
     }
 
     mat-expansion-panel {
@@ -204,22 +241,22 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
     }
 
     mat-card-actions {
-      padding: 0 16px 16px;
-      margin-top: 0.5rem;
+      padding-top: 14px;
+      padding-bottom: 24px;
+      margin-top: 0;
     }
 
     @media (max-width: 420px) {
-      .card-avatar {
-        width: 40px;
-        height: 40px;
-      }
-
       mat-card-title {
         font-size: 1.85rem;
       }
 
       mat-card-subtitle {
         font-size: 0.95rem;
+      }
+
+      mat-card-header {
+        min-height: 0;
       }
 
       mat-expansion-panel-header {
