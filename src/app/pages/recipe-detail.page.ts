@@ -11,7 +11,8 @@ import { PantryService } from '../core/services/pantry.service';
 import { RecipesService } from '../core/services/recipes.service';
 import { StudyLogService } from '../core/services/study-log.service';
 import { StudyModeService } from '../core/services/study-mode.service';
-import { scoreRecipes } from '../core/utils/scoring-utils';
+import { normalizeName, scoreRecipes } from '../core/utils/scoring-utils';
+import { FreshnessTone, daysLeft, freshnessTone } from '../core/utils/date-utils';
 
 @Component({
   selector: 'app-recipe-detail-page',
@@ -54,11 +55,11 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
           <div class="ingredient-list">
             <label class="ingredient-row" *ngFor="let ingredient of scoredRecipe()!.recipe.ingredients">
               <mat-checkbox [checked]="scoredRecipe()!.presentIngredients.includes(ingredient)">
-                <span [class.soon-ingredient]="mode() === 'B' && scoredRecipe()!.soonIngredients.includes(ingredient)">
+                <span
+                  [class.soon-ingredient-danger]="ingredientTone(ingredient) === 'danger'"
+                  [class.soon-ingredient-warn]="ingredientTone(ingredient) === 'warn'"
+                >
                   {{ ingredient | titlecase }}
-                  <span *ngIf="mode() === 'B' && scoredRecipe()!.soonIngredients.includes(ingredient)">
-                    · Use soon
-                  </span>
                 </span>
               </mat-checkbox>
             </label>
@@ -151,8 +152,13 @@ import { scoreRecipes } from '../core/utils/scoring-utils';
     }
 
     .use-soon-chip,
-    .soon-ingredient {
+    .soon-ingredient-danger {
       color: #9a3412;
+      font-weight: 700;
+    }
+
+    .soon-ingredient-warn {
+      color: #9a7a00;
       font-weight: 700;
     }
 
@@ -191,6 +197,20 @@ export class RecipeDetailPageComponent {
     scoreRecipes(this.recipesService.getRecipes(), this.pantryService.pantry(), this.mode())
       .find((entry) => entry.recipe.id === this.recipeId())
   );
+
+  ingredientTone(ingredient: string): FreshnessTone | null {
+    if (this.mode() !== 'B') {
+      return null;
+    }
+
+    const pantryItem = this.pantryService.pantry().find((item) => item.name === normalizeName(ingredient));
+    if (!pantryItem) {
+      return null;
+    }
+
+    const tone = freshnessTone(daysLeft(pantryItem.expiresOn));
+    return tone === 'ok' ? null : tone;
+  }
 
   submitChoice(): void {
     const scored = this.scoredRecipe();
