@@ -1,11 +1,14 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { PantryService } from '../../core/services/pantry.service';
 import { ScoredRecipe, StudyMode } from '../../core/models';
+import { FreshnessTone, daysLeft, freshnessTone } from '../../core/utils/date-utils';
+import { normalizeName } from '../../core/utils/scoring-utils';
 
 @Component({
   selector: 'app-recipe-card',
@@ -36,7 +39,12 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
             <mat-chip-set>
               <mat-chip>{{ scored.presentIngredients.length }} / {{ scored.recipe.ingredients.length }} ingredients</mat-chip>
               <mat-chip *ngFor="let tag of scored.recipe.tags">{{ tag }}</mat-chip>
-              <mat-chip *ngIf="mode === 'B' && scored.soonIngredients.length" class="use-soon-chip">
+              <mat-chip
+                *ngIf="mode === 'B' && scored.soonIngredients.length"
+                class="use-soon-chip"
+                [class.use-soon-chip-danger]="warningTone() === 'danger'"
+                [class.use-soon-chip-warn]="warningTone() === 'warn'"
+              >
                 <mat-icon>warning</mat-icon>
                 Use Soon
               </mat-chip>
@@ -49,7 +57,10 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
           <p class="summary" *ngIf="scored.presentIngredients.length; else noMatches">
             Uses:
             <span *ngFor="let ingredient of scored.presentIngredients; let last = last">
-              <span [class.soon-ingredient]="mode === 'B' && scored.soonIngredients.includes(ingredient)">
+              <span
+                [class.soon-ingredient-danger]="ingredientTone(ingredient) === 'danger'"
+                [class.soon-ingredient-warn]="ingredientTone(ingredient) === 'warn'"
+              >
                 {{ ingredient | titlecase }}
               </span><span *ngIf="!last">, </span>
             </span>
@@ -190,9 +201,24 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
       word-break: break-word;
     }
 
-    .soon-ingredient {
+    .use-soon-chip.use-soon-chip-danger {
+      background: #fee2e2;
+      color: #7f1d1d;
+    }
+
+    .use-soon-chip.use-soon-chip-warn {
+      background: #fef3c7;
+      color: #9a7a00;
+    }
+
+    .soon-ingredient-danger {
       font-weight: 700;
       color: #9a3412;
+    }
+
+    .soon-ingredient-warn {
+      font-weight: 700;
+      color: #9a7a00;
     }
 
     .card-section-missing {
@@ -268,7 +294,43 @@ import { ScoredRecipe, StudyMode } from '../../core/models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecipeCardComponent {
+  private readonly pantryService = inject(PantryService);
+
   @Input({ required: true }) scored!: ScoredRecipe;
   @Input({ required: true }) mode!: StudyMode;
   @Output() viewDetails = new EventEmitter<string>();
+
+  ingredientTone(ingredient: string): FreshnessTone | null {
+    if (this.mode !== 'B') {
+      return null;
+    }
+
+    const pantryItem = this.pantryService.pantry().find((item) => item.name === normalizeName(ingredient));
+    if (!pantryItem) {
+      return null;
+    }
+
+    const tone = freshnessTone(daysLeft(pantryItem.expiresOn));
+    return tone === 'ok' ? null : tone;
+  }
+
+  warningTone(): FreshnessTone | null {
+    if (this.mode !== 'B' || !this.scored?.soonIngredients.length) {
+      return null;
+    }
+
+    const tones = this.scored.soonIngredients
+      .map((ingredient) => this.ingredientTone(ingredient))
+      .filter((tone): tone is FreshnessTone => tone !== null);
+
+    if (tones.includes('danger')) {
+      return 'danger';
+    }
+
+    if (tones.includes('warn')) {
+      return 'warn';
+    }
+
+    return null;
+  }
 }
