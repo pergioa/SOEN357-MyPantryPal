@@ -52,6 +52,10 @@ The app is designed around a simple study flow:
 - Study log entries are also stored locally in browser `localStorage`
 - No backend or external database is required
 
+## Prototype Walkthrough
+
+- Link: https://youtu.be/FGxuchnLGXU
+  
 ## Routes
 
 - `/` home page
